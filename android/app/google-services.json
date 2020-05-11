@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1071899733841",
+    "firebase_url": "https://absen-shalat.firebaseio.com",
+    "project_id": "absen-shalat",
+    "storage_bucket": "absen-shalat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1071899733841:android:a5a8a8228eb57a14576d70",
+        "android_client_info": {
+          "package_name": "absensholat.absen_sholat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1071899733841-d7hnbn64dflr2a4q09vd3tsn5j5nsr81.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCi0MxIbSpsFvYOjgQgDdHM8InRATt8Gs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1071899733841-d7hnbn64dflr2a4q09vd3tsn5j5nsr81.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
