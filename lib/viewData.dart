@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-// Create a Form widget.
 class ViewData extends StatefulWidget {
   @override
   _ViewData createState() {
@@ -10,72 +9,35 @@ class ViewData extends StatefulWidget {
 }
 
 class _ViewData extends State<ViewData> {
-  String id;
-  final db = Firestore.instance;
-  final _formKey = GlobalKey<FormState>();
-  String name;
-  String nim;
-
-  Card buildItem(DocumentSnapshot doc) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              'name: ${doc.data['nama']}',
-              style: TextStyle(fontSize: 24),
-            ),
-            Text(
-              'nim: ${doc.documentID}',
-              style: TextStyle(fontSize: 24),
-            ),
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                SizedBox(width: 8),
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: DefaultTabController(
+        length: 5,
+        child: Scaffold(
+          appBar: AppBar(
+            bottom: TabBar(
+              tabs: [
+                Tab(icon: Icon(Icons.directions_car)),
+                Tab(icon: Icon(Icons.directions_transit)),
+                Tab(icon: Icon(Icons.directions_bike)),
+                Tab(icon: Icon(Icons.directions_transit)),
+                Tab(icon: Icon(Icons.directions_bike)),
               ],
             ),
-          ],
+            title: Text('Absensi'),
+          ),
+          body: TabBarView(
+            children: [
+              Icon(Icons.directions_car),
+              Icon(Icons.directions_transit),
+              Icon(Icons.directions_bike),
+              Icon(Icons.directions_transit),
+              Icon(Icons.directions_bike),
+            ],
+          ),
         ),
       ),
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Daftar Siswa'),
-        backgroundColor: Colors.green,
-      ),
-      body: ListView(
-        padding: EdgeInsets.all(8),
-        children: <Widget>[
-          StreamBuilder<QuerySnapshot>(
-            stream: db.collection('ID').snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Column(children: snapshot.data.documents.map((doc) => buildItem(doc)).toList());
-              } else {
-                return SizedBox();
-              }
-            },
-          )
-        ],
-      ),
-    );
-  }
-
-  void readData() async {
-    DocumentSnapshot snapshot = await db.collection('ID').document(id).get();
-    print(snapshot.data['nama']);
-  }
-
-  void deleteData(DocumentSnapshot doc) async {
-    await db.collection('ID').document(doc.documentID).delete();
-    setState(() => id = null);
   }
 }

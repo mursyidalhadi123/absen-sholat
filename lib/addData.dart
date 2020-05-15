@@ -35,11 +35,6 @@ class _AddData extends State<AddData> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                FlatButton(
-                  onPressed: () => updateData(doc),
-                  child: Text('Update', style: TextStyle(color: Colors.white)),
-                  color: Colors.green,
-                ),
                 SizedBox(width: 8),
                 FlatButton(
                   onPressed: () => deleteData(doc),
@@ -118,7 +113,7 @@ class _AddData extends State<AddData> {
               RaisedButton(
                 onPressed: id != null ? readData : null,
                 child: Text('Read', style: TextStyle(color: Colors.white)),
-                color: Colors.blue,
+                color: Colors.green,
               ),
             ],
           ),
@@ -150,10 +145,6 @@ class _AddData extends State<AddData> {
   void readData() async {
     DocumentSnapshot snapshot = await db.collection('ID').document(id).get();
     print(snapshot.data['nama']);
-  }
-
-  void updateData(DocumentSnapshot doc) async {
-    await db.collection('ID').document(doc.documentID).updateData({'nama': '$name'});
   }
 
   void deleteData(DocumentSnapshot doc) async {

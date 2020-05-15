@@ -137,6 +137,7 @@ class _QRViewExampleState extends State<QRViewExample> {
             qrText = null;
             prText = 'tidak dikenal';
           });
+          createRecord("hmm");
         }
       });
       wait();
@@ -145,7 +146,7 @@ class _QRViewExampleState extends State<QRViewExample> {
 
   void wait() async {
     controller?.pauseCamera();
-    await Future.delayed(const Duration(seconds: 2), (){
+    await Future.delayed(const Duration(seconds: 1), (){
       controller?.resumeCamera();
     });
   }
