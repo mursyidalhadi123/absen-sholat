@@ -1,4 +1,3 @@
-import 'package:absen_sholat/addData.dart';
 import 'package:flutter/material.dart';
 import 'package:absen_sholat/scanner.dart';
 import 'package:absen_sholat/viewData.dart';
@@ -103,45 +102,6 @@ class MainMenu extends StatelessWidget {
               ),
             ),
             SizedBox(height: 30),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => AddData()),
-                );},
-              child: Container(
-                width: 300,
-                height: 100,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.green,
-                      Colors.green[300],
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      offset: Offset(5, 5),
-                      blurRadius: 10,
-                    )
-                  ],
-                ),
-                child: Center(
-                  child: Text(
-                    'Edit Data',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ),
-            ),
           ],
         ),
       ),

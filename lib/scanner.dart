@@ -1,5 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:qr_code_scanner/qr_scanner_overlay_shape.dart';
 
@@ -22,10 +24,8 @@ class _QRViewExampleState extends State<QRViewExample> {
   var prText = "";
   var flashState = flash_on;
   var cameraState = front_camera;
-  var count = 0;
   QRViewController controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  final db = Firestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -122,25 +122,20 @@ class _QRViewExampleState extends State<QRViewExample> {
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) {
-
-      DocumentReference documentReference =
-      db.collection("ID").document(scanData);
-      documentReference.get().then((datasnapshot) {
-        if(datasnapshot.data['nama'] != null) {
-          setState(() {
-            qrText = datasnapshot.data['nama'];
-            prText = "Data $qrText berhasil dimasukkan";
-          });
-          createRecord(scanData);
-        }else{
-          setState(() {
-            qrText = null;
-            prText = 'tidak dikenal';
-          });
-          createRecord("hmm");
-        }
-      });
       wait();
+      addData(scanData);
+      setState(() {
+        qrText = scanData;
+        prText = "Data $qrText berhasil dimasukkan";
+      });
+    });
+  }
+
+  void addData(nim){
+    var url="http://192.168.100.45/flutter/api/addData.php";
+
+    http.post(url, body: {
+    "NIM": nim,
     });
   }
 
@@ -155,13 +150,5 @@ class _QRViewExampleState extends State<QRViewExample> {
   void dispose() {
     controller.dispose();
     super.dispose();
-  }
-
-  void createRecord(id) async {
-    await db.collection("Absensi")
-        .document(id)
-        .setData({
-      'time': DateTime.now(),
-    });
   }
 }
