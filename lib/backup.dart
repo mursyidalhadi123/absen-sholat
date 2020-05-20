@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';
+import 'dart:async';
 
-// Create a Form widget.
+void main() => runApp(ViewData());
 class ViewData extends StatefulWidget {
   @override
   _ViewData createState() {
@@ -11,95 +10,56 @@ class ViewData extends StatefulWidget {
 }
 
 class _ViewData extends State<ViewData> {
-  String id;
-  final db = Firestore.instance;
-  final _formKey = GlobalKey<FormState>();
-  String name;
-  String nim;
+  DateTime selectedDate = DateTime.now();
 
-  Card buildItem(DocumentSnapshot doc) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              '${doc.data['nama']}',
-              style: TextStyle(fontSize: 24),
-            ),
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                SizedBox(width: 8),
-                FlatButton(
-                  onPressed: () => _showDialog(doc),
-                  child: Text('Lihat'),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
+  Future<Null> _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2101));
+    if (picked != null && picked != selectedDate)
+      setState(() {
+        selectedDate = picked;
+      });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Daftar Siswa'),
-        backgroundColor: Colors.green,
-      ),
-      body: ListView(
-        padding: EdgeInsets.all(8),
-        children: <Widget>[
-          StreamBuilder<QuerySnapshot>(
-            stream: db.collection('ID').snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Column(children: snapshot.data.documents.map((doc) => buildItem(doc)).toList());
-              } else {
-                return SizedBox();
-              }
-            },
-          )
-        ],
-      ),
-    );
-  }
-
-  void readData() async {
-    DocumentSnapshot snapshot = await db.collection('ID').document(id).get();
-    print(snapshot.data['nama']);
-  }
-
-  void deleteData(DocumentSnapshot doc) async {
-    await db.collection('ID').document(doc.documentID).delete();
-    setState(() => id = null);
-  }
-
-  void _showDialog(DocumentSnapshot doc) async {
-    DocumentSnapshot snapshot = await db.collection('Absensi').document(doc.documentID).get();
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: new Text(doc.data['nama']),
-          content: new Text("Scan terakhir:\n${snapshot.data['time'].toDate()}"),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text("Kembali"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+    return MaterialApp(
+      home: DefaultTabController(
+        length: 5,
+        child: Scaffold(
+          appBar: AppBar(
+            bottom: TabBar(
+              tabs: [
+                Tab(icon: Icon(Icons.brightness_1),text: "Shubuh"),
+                Tab(icon: Icon(Icons.wb_sunny),text: "Dzuhur"),
+                Tab(icon: Icon(Icons.cloud),text: "Ashar"),
+                Tab(icon: Icon(Icons.brightness_3),text: "Maghrib"),
+                Tab(icon: Icon(Icons.star),text: "Isya"),
+              ],
             ),
-          ],
-        );
-      },
+            actions: <Widget>[
+              Text("${selectedDate.toLocal()}".split(' ')[0]),
+              SizedBox(height: 10.0,),
+              RaisedButton(
+                onPressed: () => _selectDate(context),
+                child: Text('Select date'),
+              ),
+            ],
+          ),
+          body: TabBarView(
+            children: [
+              Icon(Icons.directions_car),
+              Icon(Icons.directions_transit),
+              Icon(Icons.directions_bike),
+              Icon(Icons.directions_transit),
+              Icon(Icons.directions_bike),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:qr_code_scanner/qr_code_scanner.dart';
-import 'package:qr_code_scanner/qr_scanner_overlay_shape.dart';
+import 'package:adhan_flutter/adhan_flutter.dart';
 
 const flash_on = "Nyalakan Flash";
 const flash_off = "Matikan Flash";
@@ -20,6 +21,8 @@ class QRViewExample extends StatefulWidget {
 }
 
 class _QRViewExampleState extends State<QRViewExample> {
+  final latitude = -6.5836;
+  final longitude = 106.6452;
   var qrText = "";
   var prText = "";
   var flashState = flash_on;
@@ -33,26 +36,11 @@ class _QRViewExampleState extends State<QRViewExample> {
       body: Column(
         children: <Widget>[
           Expanded(
-            child: QRView(
-              key: qrKey,
-              onQRViewCreated: _onQRViewCreated,
-              overlay: QrScannerOverlayShape(
-                borderColor: Colors.red,
-                borderRadius: 10,
-                borderLength: 30,
-                borderWidth: 10,
-                cutOutSize: 300,
-              ),
-            ),
-            flex: 4,
-          ),
-          Expanded(
             child: FittedBox(
               fit: BoxFit.contain,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Text("$prText",style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold)),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -105,7 +93,22 @@ class _QRViewExampleState extends State<QRViewExample> {
               ),
             ),
             flex: 1,
-          )
+          ),
+          Expanded(
+            child: QRView(
+              key: qrKey,
+              onQRViewCreated: _onQRViewCreated,
+              overlay: QrScannerOverlayShape(
+                borderColor: Colors.red,
+                borderRadius: 10,
+                borderLength: 30,
+                borderWidth: 10,
+                cutOutSize: 300,
+              ),
+            ),
+            flex: 4,
+          ),
+          Text("$prText",style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold)),
         ],
       ),
     );
@@ -122,8 +125,11 @@ class _QRViewExampleState extends State<QRViewExample> {
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) {
+      DateTime now = DateTime.now();
+      String formattedDate = DateFormat('YYYY-MM-dd').format(now);
+      String time = DateFormat('HH:mm').format(now);
       wait();
-      addData(scanData);
+      addData(scanData, formattedDate, time);
       setState(() {
         qrText = scanData;
         prText = "Data $qrText berhasil dimasukkan";
@@ -131,11 +137,16 @@ class _QRViewExampleState extends State<QRViewExample> {
     });
   }
 
-  void addData(nim){
-    var url="http://192.168.100.45/flutter/api/addData.php";
+  void addData(nis, date, time){
+    var url="http://asrama.systemof.fail/api/catatanSholat";
+    int nisnum = int.parse(nis)
 
     http.post(url, body: {
-    "NIM": nim,
+      "NIS": nisnum,
+      "jenis_sholat": "shubuh",
+      "waktu_adzan": time,
+      "waktu_masuk": time,
+      "tanggal": date
     });
   }
 
@@ -150,5 +161,18 @@ class _QRViewExampleState extends State<QRViewExample> {
   void dispose() {
     controller.dispose();
     super.dispose();
+  }
+
+  Future<DateTime> getTodayFajrTime() async {
+    final adhan = AdhanFlutter.create(Coordinates(latitude, longitude), DateTime.now(), CalculationMethod.SINGAPORE);
+    return await adhan.fajr;
+  }
+  Future<DateTime> getTodayDhuhrTime() async {
+    final adhan = AdhanFlutter.create(Coordinates(latitude, longitude), DateTime.now(), CalculationMethod.SINGAPORE);
+    return await adhan.dhuhr;
+  }
+  Future<DateTime> getTodayIshaTime() async {
+    final adhan = AdhanFlutter.create(Coordinates(latitude, longitude), DateTime.now(), CalculationMethod.SINGAPORE);
+    return await adhan.isha;
   }
 }

@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:absen_sholat/scanner.dart';
 import 'package:absen_sholat/viewData.dart';
 
-void main() {
+void main() async {
   runApp(MaterialApp(
     title: 'Absen Sholat',
     home: MainMenu(),
   ));
 }
 
-class MainMenu extends StatelessWidget {
+class MainMenu extends StatefulWidget {
+  MainMenuState createState() => MainMenuState();
+}
+
+class MainMenuState extends State<MainMenu> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
