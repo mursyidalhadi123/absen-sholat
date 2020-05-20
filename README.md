@@ -4,7 +4,7 @@ Aplikasi untuk mempermudah proses pendataan absensi sholat siswa dengan mengguna
 
 ## Ruang Lingkup Pengembangan
 
-Web SIMAK Asrama memiliki 2 fitur:
+Aplikasi absen sholat ini memiliki 2 fitur:
   
   * Scan
   : Mengaktifkan mode scan secara streaming yang menginput nis, nama sholat & waktu adzan terdekat, serta tanggal hari itu melalui barcode nis yang terdapat pada id card siswa.
